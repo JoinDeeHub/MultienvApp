@@ -1,0 +1,64 @@
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: multienv_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - multinet
+
+  dev-backend:
+    build:
+      context: ./backend/dev
+      dockerfile: Dockerfile
+    container_name: multienv_dev_backend
+    env_file:
+      - ./backend/dev/.env
+    ports:
+      - "3001:3001"
+    networks:
+      - multinet
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  prod-backend:
+    build:
+      context: ./backend/prod
+      dockerfile: Dockerfile
+    container_name: multienv_prod_backend
+    env_file:
+      - ./backend/prod/.env
+    ports:
+      - "3002:3002"
+    networks:
+      - multinet
+    depends_on:
+      - mongo
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_DEV_BACKEND: http://dev-backend:3001
+        REACT_APP_PROD_BACKEND: http://prod-backend:3002
+    container_name: multienv_frontend
+    ports:
+      - "3005:3000"   # <--- HOST_PORT:CONTAINER_PORT  changed from 3000:3000
+    depends_on:
+      - dev-backend
+      - prod-backend
+    networks:
+      - multinet
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+
+networks:
+  multinet:
+    driver: bridge

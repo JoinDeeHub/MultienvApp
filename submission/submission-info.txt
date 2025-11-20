@@ -1,0 +1,17 @@
+Student Name: [DEEPIKA NARENDRAN]
+
+Repository URL: [https://github.com/JoinDeeHub/multienv_deployment_DEEPIKA_NARENDRAN]
+
+Deployment Status: [Working]
+
+Access URLs:
+
+- Development: http://localhost:3005/dev
+               http://localhost:3001/
+
+- Production: http://localhost:3005/prod
+              http://localhost:3002/
+
+- Frontend: http://localhost:3005/
+
+Date of Submission: [20-11-2025]
